@@ -11,6 +11,7 @@ class SafetyAssessment:
 
 
 LEVEL_1_PATTERNS = [
+    r"\bsaans\s+(?:nahi|nahin|nhi)\s+aa\s+rahi\b",
     r"\bchest\s*pain\b",
     r"\bchest\s*pressure\b",
     r"\bdifficulty\s*breathing\b",

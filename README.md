@@ -42,3 +42,8 @@ WhatsApp Cloud API webhook ingress (fixtures/webhook/): Explicitly marked option
 Hybrid lexical + dense RRF retrieval: Kept retrieval strictly dense pgvector cosine search (<=>) per the Core spec so retrieval behavior and threshold tuning remain transparent and easy to inspect.
 
 Human-in-the-loop booking approval interrupt: Focused on single-pass slot filling with Postgres checkpoint persistence (AsyncPostgresSaver) and added the Tool-Call Timeline and Page Reload Transcript Restoration (GET /v1/threads/{thread_id}) instead.
+## Demo status
+
+Run `docker compose up -d --build`, then visit http://localhost:8000. Use the sample patient selector and suggested questions to explore the prototype. This demo has no patient authentication or live nurse notification; do not use real patient data or rely on it for clinical care. WhatsApp integration is not implemented.
+
+The remaining work includes authentication and patient/thread authorization, clinician and booking validation (including timezone-safe database uniqueness and request-ID ownership), clinically reviewed multilingual safety and escalation notification, full symptom-logging chat integration, and independent evaluation without cached expected outputs. The current document retrieval uses deterministic hash embeddings and keyword scoring rather than a multilingual semantic embedding model.

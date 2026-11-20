@@ -162,7 +162,7 @@ def build_care_concierge_graph(
             else:
                 reply = (
                     f"Emergency Escalation (Level {esc_level}, {esc_id or 'LOGGED'}): Please call **112** "
-                    f"immediately and do not wait for a callback. A nurse will respond within {sla} minutes."
+                    f"immediately and do not wait for a callback. This demo does not notify a nurse."
                 )
 
             return {

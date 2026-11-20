@@ -112,7 +112,7 @@ class SafetyAndIntentClassifier:
             reason,
             len(message or ""),
         )
-        return SafetyAssessment(level=1, call_112=True, sla_minutes=5)
+        return SafetyAssessment(level=1, reason="Safety classifier failed", call_112=True, sla_minutes=5)
 
     async def classify_safety(
         self,
@@ -132,6 +132,7 @@ class SafetyAndIntentClassifier:
                     lvl = res.get("level", res.get("safety_level"))
                     return SafetyAssessment(
                         level=lvl,
+                        reason=str(res.get("reason", "Classifier assessment")),
                         call_112=bool(res.get("call_112", lvl == 1)),
                         sla_minutes=res.get("sla_minutes", 5 if lvl == 1 else (30 if lvl == 2 else (240 if lvl == 3 else None))),
                     )

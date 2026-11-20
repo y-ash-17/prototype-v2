@@ -124,6 +124,7 @@ async def retrieve_corpus_chunks(
         select(DocChunk)
         .where(
             DocChunk.superseded_by.is_(None),
+            DocChunk.doc_id != "staff-notes-internal",
             or_(DocChunk.applies_to == "all", DocChunk.applies_to == resolved_soc_id),
         )
         .order_by(DocChunk.embedding.cosine_distance(q_emb).asc().nullslast())

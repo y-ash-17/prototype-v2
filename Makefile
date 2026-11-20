@@ -13,7 +13,7 @@ seed:
 	python -m scripts.seed_and_ingest
 
 eval:
-	python -m scripts.run_eval
+	python -m evals.run_eval
 
 test:
 	pytest -v

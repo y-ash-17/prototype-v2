@@ -5,7 +5,7 @@ import os
 import re
 from pathlib import Path
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from app.db import AsyncSessionLocal
 from app.models import Clinician, DocChunk, Document, Patient, Society
@@ -170,6 +170,12 @@ async def seed_all() -> None:
                 raw_text = md_file.read_text(encoding="utf-8")
                 meta, chunks = parse_frontmatter_and_sections(raw_text, file_stem)
                 doc_id = meta.get("doc_id") or file_stem
+                # Only ingest active versions; otherwise older chunks win duplicate IDs.
+                if meta.get("superseded_by"):
+                    continue
+                await session.execute(delete(DocChunk).where(
+                    DocChunk.doc_id == doc_id, DocChunk.version != meta["version"]
+                ))
 
                 if doc_id not in seen_doc_ids:
                     seen_doc_ids.add(doc_id)

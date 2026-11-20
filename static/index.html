@@ -1,126 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MicroHeal Care Concierge</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 24px auto;
-      max-width: 960px;
-      background: #f8fafc;
-      color: #0f172a;
-      padding: 0 16px;
-    }
-    .row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-      align-items: center;
-    }
-    select, input, button {
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
-      font-size: 14px;
-    }
-    button {
-      background: #0f172a;
-      color: #ffffff;
-      cursor: pointer;
-      font-weight: 500;
-    }
-    button:hover { background: #1e293b; }
-    button.secondary {
-      background: #e2e8f0;
-      color: #0f172a;
-    }
-    button.secondary:hover { background: #cbd5e1; }
-    #chat-box {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 16px;
-      min-height: 280px;
-      max-height: 440px;
-      overflow-y: auto;
-      margin-bottom: 12px;
-    }
-    .msg {
-      margin-bottom: 12px;
-      padding: 10px 12px;
-      border-radius: 6px;
-      white-space: pre-wrap;
-      line-height: 1.45;
-    }
-    .user {
-      background: #eff6ff;
-      border-left: 4px solid #2563eb;
-    }
-    .assistant {
-      background: #f1f5f9;
-      border-left: 4px solid #0f766e;
-    }
-    .meta {
-      font-size: 12px;
-      color: #475569;
-      margin-top: 6px;
-    }
-    .citations {
-      margin-top: 6px;
-      font-size: 12px;
-      color: #0f766e;
-      font-weight: 500;
-    }
-    #timeline {
-      background: #0f172a;
-      color: #e2e8f0;
-      padding: 12px;
-      border-radius: 8px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 12px;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-  </style>
-</head>
-<body>
-  <h2>MicroHeal Care Concierge</h2>
-
-  <div class="row">
-    <label>Patient:
-      <select id="patient-select">
-        <option value="pat_003">pat_003 — Priya Nair (Shivalik Greens)</option>
-        <option value="pat_010">pat_010 — Suresh Yadav (Lotus Tower)</option>
-        <option value="pat_001">pat_001 — Ananya Sharma (Shivalik Greens)</option>
-        <option value="pat_016">pat_016 — Sanjay Bhatia (Royal Palms)</option>
-      </select>
-    </label>
-    <label>Thread ID:
-      <input id="thread-id" type="text" value="thread_demo_1" />
-    </label>
-    <button class="secondary" onclick="reloadHistory()">Reload History</button>
-    <button class="secondary" onclick="retryLastUuid()">Retry Last UUID</button>
-  </div>
-
-  <div id="chat-box"></div>
-
-  <div class="row">
-    <input
-      id="message-input"
-      type="text"
-      style="flex: 1;"
-      placeholder="Ask about Sunday wellness hours, test fasting, coverage, or book a slot..."
-    />
-    <button onclick="sendMessage()">Send</button>
-  </div>
-
-  <h4>SSE & Tool-Call Timeline</h4>
-  <div id="timeline"></div>
-
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MicroHeal | Care Concierge</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:#122e35;background:#edf5f3;font-size:16px}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}.shell{min-height:100vh;display:grid;grid-template-columns:255px minmax(0,1fr)}.sidebar{background:#123d3c;color:#fff;padding:30px 22px;display:flex;flex-direction:column;gap:35px}.brand{display:flex;gap:12px;align-items:center;font-weight:750;font-size:1.2rem;letter-spacing:-.04em}.brandmark{display:grid;place-items:center;background:#b6e7d0;color:#123d3c;border-radius:12px;width:42px;height:42px;font-size:1.5rem}.brand small{display:block;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#b9d7cd;margin-top:2px}.nav-label,.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:.7rem;font-weight:750}.nav-label{color:#a7c9be;margin:0 0 13px 8px}.nav-item{padding:12px;background:#285955;border-radius:10px;font-weight:650}.side-note{margin-top:auto;background:#214e4a;border:1px solid #3d6c63;border-radius:14px;padding:18px;color:#d5eae2;font-size:.87rem;line-height:1.55}.side-note strong{display:block;color:#fff;margin-bottom:6px}.main{padding:34px clamp(20px,4vw,58px) 48px;max-width:1500px;width:100%;margin:auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;padding-bottom:24px;border-bottom:1px solid #d2e2dc}.topbar strong{font-size:1.05rem}.badge{background:#def1e7;color:#1f6554;border:1px solid #c7e6d7;border-radius:50px;padding:7px 12px;font-size:.76rem;font-weight:700}.intro{display:flex;justify-content:space-between;gap:20px;align-items:end;margin:34px 0 22px}.eyebrow{color:#498272;margin-bottom:8px}.intro h1{font-size:clamp(1.9rem,3vw,2.75rem);letter-spacing:-.055em;line-height:1.1;margin:0 0 10px}.intro p{color:#58736f;line-height:1.55;margin:0}.layout{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:20px;align-items:start}.card{background:white;border:1px solid #dceae5;border-radius:18px;box-shadow:0 10px 30px #183e3110}.chat-head{padding:19px 22px;border-bottom:1px solid #edf2ef;display:flex;align-items:center;gap:12px}.avatar{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:#dff3e9;color:#236e57;font-weight:800}.chat-head strong{display:block}.chat-head small{color:#6b8580}.chat-head .badge{margin-left:auto}.chat-body{padding:24px;min-height:450px}.welcome{background:#f3faf6;border:1px solid #e0f0e5;border-radius:15px;padding:22px;margin-bottom:18px}.welcome .eyebrow{margin-bottom:9px}.welcome h2{margin:0 0 8px;font-size:1.28rem;letter-spacing:-.03em}.welcome p{color:#607b73;margin:0;line-height:1.55;font-size:.93rem}.suggestions{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0 22px}.suggestions button{background:#fff;color:#366a5b;border:1px solid #cfe3d8;border-radius:99px;padding:9px 12px;font-size:.82rem}.suggestions button:hover{background:#eaf6ef}#chat-box{max-height:430px;overflow:auto}.msg{padding:15px 16px;margin:0 0 12px;border-radius:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.94rem}.msg strong{display:block;font-size:.72rem;letter-spacing:.06em;margin-bottom:5px}.user{background:#e4f4eb;margin-left:12%}.assistant{background:#f4f7f6;margin-right:8%}.meta,.citations{font-size:.72rem;color:#66827a;margin-top:7px}.composer{padding:16px 20px;border-top:1px solid #edf2ef;display:flex;gap:10px}.composer input{flex:1;min-width:0;border:1px solid #d7e5df;border-radius:11px;padding:13px;outline:none}.composer input:focus{border-color:#459f7f}.primary{background:#216f58;color:white;border:0;border-radius:11px;padding:12px 22px;font-weight:700}.primary:hover{background:#195a48}.footnote{text-align:center;color:#78908a;font-size:.75rem;padding:0 18px 16px}.side-card{padding:21px;margin-bottom:16px}.side-card h3{font-size:1rem;margin:0 0 7px}.side-card p{color:#6b827d;font-size:.84rem;line-height:1.5;margin:0 0 15px}.field{display:block;color:#526f66;font-size:.76rem;font-weight:700;margin:15px 0 6px}.side-card select,.side-card input{width:100%;border:1px solid #d6e4dd;border-radius:9px;background:#fff;color:#29473f;padding:10px;min-width:0}.secondary{background:#f1f7f3;color:#285e4d;border:1px solid #dbeae1;border-radius:9px;padding:10px 12px;font-weight:650;font-size:.82rem;margin-top:10px}.tip{background:#f0f7f4;padding:15px;border-radius:12px;color:#527268;font-size:.84rem;line-height:1.5}.tip strong{display:block;color:#2e594c;margin-bottom:5px}details summary{cursor:pointer;color:#526f66;font-weight:700;font-size:.85rem}#timeline{margin-top:14px;background:#173a37;color:#d5efe3;border-radius:9px;padding:12px;font: .72rem/1.5 monospace;max-height:220px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;min-height:45px}@media(max-width:950px){.shell{grid-template-columns:1fr}.sidebar{padding:16px 22px;flex-direction:row;align-items:center}.sidebar nav,.side-note{display:none}.layout{grid-template-columns:1fr}.side-card{margin:0}.settings{display:grid;grid-template-columns:1fr 1fr;gap:15px}}@media(max-width:600px){.main{padding:22px 15px}.topbar{padding-bottom:16px}.intro{margin:25px 0 18px}.chat-body{padding:16px;min-height:350px}.settings{grid-template-columns:1fr}.badge{font-size:.68rem}.composer{padding:12px}.primary{padding:10px 15px}}
+</style></head><body><div class="shell"><aside class="sidebar"><div class="brand"><span class="brandmark">&#10033;</span><div>microheal<small>Care concierge</small></div></div><nav><p class="nav-label">Your workspace</p><div class="nav-item">&#10022; &nbsp; Care assistant</div></nav><div class="side-note"><strong>Care, made simpler.</strong>A little help navigating your community health services.</div></aside>
+<main class="main"><div class="topbar"><strong>Care assistant</strong><span class="badge"> Demonstration</span></div><section class="intro"><div><div class="eyebrow">Your community, your care</div><h1>How can we help today?</h1><p>Find clinic information and explore appointment support, all in one place.</p></div></section>
+<div class="layout"><section class="card"><div class="chat-head"><div class="avatar">&#10033;</div><div><strong>Care Concierge</strong><small>Your community health assistant</small></div><span class="badge">Demo mode</span></div><div class="chat-body"><div class="welcome"><div class="eyebrow">Here for you</div><h2>Welcome to your care assistant.</h2><p>Ask about clinic hours, services or appointments. Choose a suggestion to get started.</p></div><div class="suggestions"><button type="button" onclick="usePrompt('What are the wellness room hours on Sunday?')">Wellness room hours</button><button type="button" onclick="usePrompt('Is thyroid test covered in the plan?')">Plan coverage</button><button type="button" onclick="usePrompt('Book a cardiology appointment')">Book a consultation</button><button type="button" onclick="usePrompt('Show my upcoming bookings')">My bookings</button></div><div id="chat-box" role="log" aria-live="polite"></div></div><div class="composer"><input id="message-input" aria-label="Your message" placeholder="Type your question here..."><button class="primary" onclick="sendMessage()">Send</button></div><div class="footnote">Demo only &middot; For emergencies, contact local emergency services immediately.</div></section>
+<aside class="settings"><section class="card side-card"><h3>Demo settings</h3><p>Select a sample patient and conversation to explore the experience.</p><label class="field" for="patient-select">Sample patient</label><select id="patient-select"><option value="pat_003">Priya Nair &middot; Shivalik Greens</option><option value="pat_010">Suresh Yadav &middot; Lotus Tower</option><option value="pat_001">Ananya Sharma &middot; Shivalik Greens</option><option value="pat_016">Sanjay Bhatia &middot; Royal Palms</option></select><label class="field" for="thread-id">Conversation ID</label><input id="thread-id" type="text" value="thread_demo_1"><button class="secondary" onclick="reloadHistory()">Load conversation</button> <button class="secondary" onclick="retryLastUuid()">Retry last request</button></section><section class="card side-card"><div class="tip"><strong>Something urgent?</strong>This is a demonstration and does not connect you to a healthcare professional. Contact emergency services directly.</div></section><section class="card side-card"><details><summary>View activity</summary><div id="timeline" aria-live="polite"></div></details></section></aside></div></main></div>
   <script>
+    function usePrompt(text) { document.getElementById("message-input").value = text; document.getElementById("message-input").focus(); }
     let lastRequestId = null;
     let lastPayload = null;
 
@@ -199,11 +87,12 @@
       const assistantUi = createMsgElement("assistant", `request_id=${request_id}`);
       const collectedCitations = [];
 
-      const response = await fetch("/v1/chat", {
+      let response;
+      try { response = await fetch("/v1/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ thread_id, patient_id, message, request_id })
-      });
+      }); } catch (error) { assistantUi.bodySpan.textContent = "Could not connect. Please check that the server is running."; logTimeline("error", String(error)); return; }
 
       if (!response.ok || !response.body) {
         const errText = await response.text();
@@ -305,6 +194,7 @@
       logTimeline("final", `Restored thread ${thread_id} (${(data.messages || []).length} messages).`);
     }
 
+    document.getElementById("patient-select").addEventListener("change", () => { document.getElementById("thread-id").value = "demo_" + newUuid(); document.getElementById("chat-box").textContent = ""; document.getElementById("timeline").textContent = ""; });
     document.getElementById("message-input").addEventListener("keydown", (e) => {
       if (e.key === "Enter") sendMessage();
     });
